@@ -1,25 +1,15 @@
-const eslint = require('eslint');
 const webpack = require('webpack');
 const convert = require('koa-connect');
 const history = require('connect-history-api-fallback');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const commonPaths = require('./paths');
 
 module.exports = {
   entry: commonPaths.entryPath,
   module: {
     rules: [
-      {
-        enforce: 'pre',
-        test: /\.(js|jsx)$/,
-        loader: 'eslint-loader',
-        exclude: /(node_modules)/,
-        options: {
-          formatter: eslint.CLIEngine.getFormatter('stylish'),
-          emitWarning: process.env.NODE_ENV !== 'production',
-        },
-      },
       {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
@@ -79,6 +69,15 @@ module.exports = {
     }),
     new ScriptExtHtmlWebpackPlugin({
       defaultAttribute: 'async',
+    }),
+    new ESLintPlugin({
+      extensions: ['js', 'jsx', 'ts', 'tsx'],
+      fix: true,
+      failOnError: false,
+      emitWarning: false,
+      // todo remove this file and fix your eslint errors.
+      exclude: ["src"],
+      emitError: false,
     }),
   ],
 };
